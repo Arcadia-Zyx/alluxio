@@ -339,6 +339,10 @@ public final class PropertyKey implements Comparable<PropertyKey> {
               + "should be the same on the clients and server.")
           .setConsistencyCheckLevel(ConsistencyCheckLevel.ENFORCE)
           .build();
+  /**
+   * @deprecated since 1.8.0 and will be removed in 2.0.
+   */
+  @Deprecated
   public static final PropertyKey NETWORK_THRIFT_FRAME_SIZE_BYTES_MAX =
       new Builder(Name.NETWORK_THRIFT_FRAME_SIZE_BYTES_MAX)
           .setDefaultValue("16MB")
@@ -894,6 +898,14 @@ public final class PropertyKey implements Comparable<PropertyKey> {
           .setDefaultValue("0.0.0.0")
           .setDescription("The hostname that Alluxio master binds to. See <a "
               + "href=\"#configure-multihomed-networks\">multi-homed networks</a>.")
+          .setScope(Scope.MASTER)
+          .build();
+  public static final PropertyKey MASTER_CLIENT_SOCKET_CLEANUP_INTERVAL =
+      new Builder(Name.MASTER_CLIENT_SOCKET_CLEANUP_INTERVAL)
+          .setDefaultValue("10min")
+          .setDescription("Interval for removing closed client sockets from internal tracking.")
+          .setIsHidden(true)
+          .setConsistencyCheckLevel(ConsistencyCheckLevel.WARN)
           .setScope(Scope.MASTER)
           .build();
   public static final PropertyKey MASTER_CONNECTION_TIMEOUT_MS =
@@ -2732,8 +2744,9 @@ public final class PropertyKey implements Comparable<PropertyKey> {
           .build();
   public static final PropertyKey INTEGRATION_MESOS_JDK_URL =
       new Builder(Name.INTEGRATION_MESOS_JDK_URL)
-          .setDefaultValue("https://alluxio-mesos.s3.amazonaws.com/jdk-8u151-linux-x64.tar.gz")
-          .setDescription("A url from which to install the jdk during Mesos deployment. When "
+          .setDefaultValue(Constants.MESOS_LOCAL_INSTALL)
+          .setDescription("A url from which to install the jdk during Mesos deployment. Default to "
+              + "LOCAL which tells Mesos to use the local JDK on the system. When "
               + "using this property, alluxio.integration.mesos.jdk.path must also be set "
               + "correctly.")
           .setConsistencyCheckLevel(ConsistencyCheckLevel.ENFORCE)
@@ -2982,6 +2995,8 @@ public final class PropertyKey implements Comparable<PropertyKey> {
     public static final String MASTER_AUDIT_LOGGING_QUEUE_CAPACITY =
         "alluxio.master.audit.logging.queue.capacity";
     public static final String MASTER_BIND_HOST = "alluxio.master.bind.host";
+    public static final String MASTER_CLIENT_SOCKET_CLEANUP_INTERVAL =
+        "alluxio.master.client.socket.cleanup.interval";
     public static final String MASTER_CONNECTION_TIMEOUT_MS =
         "alluxio.master.connection.timeout";
     public static final String MASTER_FILE_ASYNC_PERSIST_HANDLER =
